@@ -11,25 +11,25 @@ namespace AddressBook.Controllers
 {
 	public class ContactsController : ApiController
 	{
-		private readonly IContactService _contactService;
+		private readonly IContactsService _contactsService;
 
-		public ContactsController(IContactService contactService)
+		public ContactsController(IContactsService contactsService)
 		{
-			_contactService = contactService;
+			_contactsService = contactsService;
 		}
 
 		// GET api/contacts
 		public IEnumerable<Contact> Get()
 		{
-			return _contactService.GetContacts();
+			return _contactsService.GetContacts();
 		}
 
 		// GET api/contacts/5
 		public Contact Get(int id)
 		{
-			var contact = _contactService.Get(id);
+			var contact = _contactsService.Get(id);
 
-			if (contact == null)
+			if (contact.Id == 0)
 			{
 				var response = new HttpResponseMessage(HttpStatusCode.NotFound)
 				{
@@ -43,8 +43,10 @@ namespace AddressBook.Controllers
 		}
 
 		// POST api/contacts
-		public void Post([FromBody]Contact contact)
+		public Contact Post([FromBody]Contact contact)
 		{
+			Contact newContact;
+
 			if (contact.FirstName.IsNullOrWhiteSpace() || contact.LastName.IsNullOrWhiteSpace() ||
 			    contact.Email.IsNullOrWhiteSpace())
 			{
@@ -58,7 +60,7 @@ namespace AddressBook.Controllers
 
 			try
 			{
-				_contactService.Add(contact);
+				newContact = _contactsService.Add(contact);
 			}
 			catch (Exception)
 			{
@@ -69,6 +71,8 @@ namespace AddressBook.Controllers
 				};
 				throw new HttpResponseException(response);
 			}
+
+			return newContact;
 		}
 
 		// PUT api/contacts/5
@@ -85,7 +89,7 @@ namespace AddressBook.Controllers
 				throw new HttpResponseException(response);
 			}
 
-			var success = _contactService.Update(contact);
+			var success = _contactsService.Update(contact);
 
 			if (!success)
 			{
@@ -101,7 +105,7 @@ namespace AddressBook.Controllers
 		// DELETE api/contacts/5
 		public void Delete(int id)
 		{
-			var success = _contactService.Delete(id);
+			var success = _contactsService.Delete(id);
 
 			if (!success)
 			{

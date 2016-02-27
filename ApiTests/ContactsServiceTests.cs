@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using AddressBook.Models;
 using AddressBook.Services;
 using Moq;
@@ -64,8 +62,9 @@ namespace ApiTests
 		}
 
 		[Test]
-		public void Add_saves_a_new_Contact()
+		public void AddSavesANewContact()
 		{
+			// Arrange
 			var contactToAdd = new Contact
 			{
 				Address = "49 Berkley Avenue",
@@ -74,18 +73,22 @@ namespace ApiTests
 				LastName = "Casella",
 				Phone = "801.555.1234"
 			};
-
+			
+			// Act
 			_contactsService.Add(contactToAdd);
 
-			_mockDataSet.Verify(m => m.Add(It.IsAny<Contact>()), Times.Once());
-			_mockContext.Verify(m => m.SaveChanges(), Times.Once());
+			// Assert
+			_mockDataSet.Verify(m => m.Add(It.IsAny<Contact>()), Times.Once);
+			_mockContext.Verify(m => m.SaveChanges(), Times.Once);
 		}
 
 		[Test]
-		public void GetContacts_gets_all_Contacts()
+		public void GetContactsGetsAllContacts()
 		{
+			// Act
 			var results = _contactsService.GetContacts();
 
+			// Assert
 			Assert.AreEqual(3, results.Count);
 			Assert.AreEqual(1, results[0].Id);
 			Assert.AreEqual("Ken", results[0].FirstName);
@@ -95,13 +98,83 @@ namespace ApiTests
 		}
 
 		[Test]
-		public void Get_retrieves_a_single_Contact()
+		public void GetRetrievesASingleContact()
 		{
+			// Act
 			var result = _contactsService.Get(1);
 
+			// Assert
 			Assert.AreEqual(1, result.Id);
 			Assert.AreEqual("Ken", result.FirstName);
 			Assert.AreEqual("801.345.1234", result.Phone);
+		}
+
+		[Test]
+		public void DeleteSavesChangesWhenIdFound()
+		{
+			// Act
+			var result = _contactsService.Delete(1);
+
+			// Assert
+			Assert.IsTrue(result);
+			_mockDataSet.Verify(m => m.Remove(It.IsAny<Contact>()), Times.Once);
+			_mockContext.Verify(m => m.SaveChanges(), Times.Once);
+		}
+
+		[Test]
+		public void DeleteReturnsFalseWithInvalidId()
+		{
+			// Act
+			var result = _contactsService.Delete(5);
+
+			// Assert
+			Assert.IsFalse(result);
+			_mockDataSet.Verify(m => m.Remove(It.IsAny<Contact>()), Times.Never);
+			_mockContext.Verify(m => m.SaveChanges(), Times.Never);
+		}
+
+		[Test]
+		public void UpdateSavesChangesWhenIdFound()
+		{
+			// Arrange
+			var contactToUpdate = new Contact
+			{
+				Id = 1,
+				Address = "49 Berkley Avenue",
+				Email = "test@outlook.com",
+				FirstName = "Danielle",
+				LastName = "Casella",
+				Phone = "801.555.1234"
+			};
+
+			// Act
+			var result = _contactsService.Update(contactToUpdate);
+
+			// Assert
+			Assert.IsTrue(result);
+			_mockContext.Verify(m => m.SaveChanges(), Times.Once);
+		}
+		
+		[Test]
+		public void UpdateReturnsFalseWithInvalidId()
+		{
+			// Arrange
+			var contactToUpdate = new Contact
+			{
+				Id = 11,
+				Address = "49 Berkley Avenue",
+				Email = "test@outlook.com",
+				FirstName = "Danielle",
+				LastName = "Casella",
+				Phone = "801.555.1234"
+			};
+
+			// Act
+			var result = _contactsService.Update(contactToUpdate);
+
+			// Assert
+			Assert.IsFalse(result);
+			_mockContext.Verify(m => m.SaveChanges(), Times.Never);
 		}
 	}
 }

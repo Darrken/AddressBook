@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using AddressBook.Models;
 
 namespace AddressBook.Services
 {
-	public interface IContactService
+	public interface IContactsService
 	{
 		List<Contact> GetContacts();
 		Contact Get(int id);
@@ -15,7 +13,7 @@ namespace AddressBook.Services
 		bool Delete(int id);
 	}
 
-	public class ContactsService : IContactService
+	public class ContactsService : IContactsService
 	{
 		private readonly AddressBookContext _context;
 
