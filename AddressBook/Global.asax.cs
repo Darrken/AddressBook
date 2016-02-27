@@ -17,7 +17,7 @@ namespace AddressBook
 			builder.RegisterControllers(Assembly.GetExecutingAssembly());
 			builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 			builder.RegisterType<AddressBookContext>().AsSelf();
-			builder.RegisterType<ContactService>().As<IContactService>().InstancePerLifetimeScope();
+			builder.RegisterType<ContactsService>().As<IContactService>().InstancePerLifetimeScope();
 
 			var container = builder.Build();
 			//DependencyResolver.SetResolver(new AutofacDependencyResolver(container));

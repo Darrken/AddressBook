@@ -15,11 +15,11 @@ namespace AddressBook.Services
 		bool Delete(int id);
 	}
 
-	public class ContactService : IContactService
+	public class ContactsService : IContactService
 	{
 		private readonly AddressBookContext _context;
 
-		public ContactService(AddressBookContext context)
+		public ContactsService(AddressBookContext context)
 		{
 			_context = context;
 		}

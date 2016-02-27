@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Web.Http;
 using AddressBook.Models;
 using AddressBook.Services;
+using Microsoft.Ajax.Utilities;
 
 namespace AddressBook.Controllers
 {
@@ -44,6 +45,17 @@ namespace AddressBook.Controllers
 		// POST api/contacts
 		public void Post([FromBody]Contact contact)
 		{
+			if (contact.FirstName.IsNullOrWhiteSpace() || contact.LastName.IsNullOrWhiteSpace() ||
+			    contact.Email.IsNullOrWhiteSpace())
+			{
+				var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+				{
+					Content = new StringContent("The Contact is missing one or more required fields."),
+					ReasonPhrase = "Contact Missing Fields"
+				};
+				throw new HttpResponseException(response);
+			}
+
 			try
 			{
 				_contactService.Add(contact);
@@ -53,7 +65,7 @@ namespace AddressBook.Controllers
 				var response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
 				{
 					Content = new StringContent("An unexpected error occurred. The Contact was not saved."),
-					ReasonPhrase = "Contact Not Saved"
+					ReasonPhrase = "Unexpected Error"
 				};
 				throw new HttpResponseException(response);
 			}
@@ -62,6 +74,17 @@ namespace AddressBook.Controllers
 		// PUT api/contacts/5
 		public void Put([FromBody]Contact contact)
 		{
+			if (contact.FirstName.IsNullOrWhiteSpace() || contact.LastName.IsNullOrWhiteSpace() ||
+				contact.Email.IsNullOrWhiteSpace())
+			{
+				var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+				{
+					Content = new StringContent("The Contact is missing one or more required fields."),
+					ReasonPhrase = "Contact Missing Fields"
+				};
+				throw new HttpResponseException(response);
+			}
+
 			var success = _contactService.Update(contact);
 
 			if (!success)
