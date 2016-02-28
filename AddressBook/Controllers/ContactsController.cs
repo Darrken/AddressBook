@@ -71,7 +71,7 @@ namespace AddressBook.Controllers
 				var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
 				{
 					Content = new StringContent("The Contact is missing one or more required fields."),
-					ReasonPhrase = "Contact Missing Fields"
+					ReasonPhrase = "Missing Required Fields"
 				};
 				throw new HttpResponseException(response);
 			}
@@ -102,7 +102,7 @@ namespace AddressBook.Controllers
 				var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
 				{
 					Content = new StringContent("The Contact is missing one or more required fields."),
-					ReasonPhrase = "Contact Missing Fields"
+					ReasonPhrase = "Missing Required Fields"
 				};
 				throw new HttpResponseException(response);
 			}

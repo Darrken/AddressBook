@@ -1,14 +1,14 @@
 var SearchPanel = React.createClass({
     render: function() {
-        return (
-            <div className="row">
+	    return (
+		    <div className="row">
                 <div className="one-fourth column">
                     Filter: &nbsp;
-                    <input ref='search' type='text' value={this.props.search} onChange={this.onSearchChanged} />
-                    {this.props.search?<button onClick={this.props.onClearSearch} >x</button>:null}
+                    <input ref="search" type="text" value={this.props.search} onChange={this.onSearchChanged} />
+                    {this.props.search ? <button onClick={this.props.onClearSearch} >x</button> : null}
                 </div>
             </div>
-        )
+	    );
     },
     onSearchChanged: function() {
         var query = React.findDOMNode(this.refs.search).value;
@@ -24,11 +24,11 @@ var ContactTableRow = React.createClass({
                 <td>{this.props.contact.email}</td>
                 <td>{this.props.contact.phone}</td>
                 <td>{this.props.contact.address}</td>
-                <td><a href='#' onClick={this.onClick}>Edit</a></td>
+                <td><a href="#" onClick={this.onClick}>Edit</a></td>
             </tr>
         );
     },
-    onClick: function(id) {
+    onClick: function() {
         this.props.handleEditClickPanel(this.props.contact.id);
     }
 });
@@ -59,15 +59,15 @@ var ContactForm = React.createClass({
     render: function() {
         return(
             <form onSubmit={this.props.handleSubmitClick}>
-                <label forHtml='firstName'>FirstName</label><input ref='firstName' name='firstName' type='text' value={this.props.contact.firstName} onChange={this.onChange}/>
-                <label forHtml='lastName'>LastName</label><input ref='lastName' name='lastName' type='text' value={this.props.contact.lastName} onChange={this.onChange}/>
-                <label forHtml='email'>Email</label><input ref='email' name='email' type='email' value={this.props.contact.email} onChange={this.onChange}/>
-                <label forHtml='phone'>Phone</label><input ref='phone' name='phone' type='tel' value={this.props.contact.phone} onChange={this.onChange}/>
-                <label forHtml='address'>Address</label><input ref='address' name='address' type='text' value={this.props.contact.address} onChange={this.onChange}/>
-                <input type='submit' value={this.props.contact.id?"Save (id = " +this.props.contact.id+ ")":"Add"} />
-                {this.props.contact.id?<button onClick={this.props.handleDeleteClick}>Delete</button>:null}
-                {this.props.contact.id?<button onClick={this.props.handleCancelClick}>Cancel</button>:null}
-                {this.props.message?<div>{this.props.message}</div>:null}
+                <label forHtml="firstName">First Name</label><input ref="firstName" name="firstName" type="text" value={this.props.contact.firstName} required onChange={this.onChange}/>
+                <label forHtml="lastName">Last Name</label><input ref="lastName" name="lastName" type="text" value={this.props.contact.lastName} required onChange={this.onChange}/>
+                <label forHtml="email">Email</label><input ref="email" name="email" type="email" value={this.props.contact.email} required onChange={this.onChange}/>
+                <label forHtml="phone">Phone</label><input ref="phone" name="phone" type="tel" value={this.props.contact.phone} onChange={this.onChange}/>
+                <label forHtml="address">Address</label><input ref="address" name="address" type="text" value={this.props.contact.address} onChange={this.onChange}/>
+                <input type="submit" value={this.props.contact.id ? "Save (id = " + this.props.contact.id + ")" : "Add"} />
+                {this.props.contact.id ? <button onClick={this.props.handleDeleteClick}>Delete</button> : null}
+                {this.props.contact.id ? <button onClick={this.props.handleCancelClick}>Cancel</button> : null}
+                {this.props.message ? <div>{this.props.message}</div> : null}
             </form>
         );
     },
@@ -121,7 +121,7 @@ var ContactPanel = React.createClass({
         );
     },
     componentDidMount: function() {
-        this.reloadContacts('');
+        this.reloadContacts("");
     },
     onSearchChanged: function(query) {
         if (this.promise) {
@@ -136,9 +136,9 @@ var ContactPanel = React.createClass({
     },
     onClearSearch: function() {
         this.setState({
-            search: ''
+            search: ""
         });
-        this.reloadContacts('');
+        this.reloadContacts("");
     },
     handleEditClickPanel: function(id) {
         var contact = $.extend({}, this.state.contacts.filter(function(x) {
@@ -147,10 +147,14 @@ var ContactPanel = React.createClass({
         
         this.setState({
             editingContact: contact,
-            message: ''
+            message: ""
         });
     },
     handleChange: function (firstName, lastName, email, phone, address) {
+    	var validationError = undefined;
+		if (firstName.length < 1 || lastName.length < 1 || email.length < 1) {
+			validationError = "Missing required fields";
+		}
         this.setState({
             editingContact: {
                 firstName: firstName,
@@ -158,19 +162,20 @@ var ContactPanel = React.createClass({
                 email: email,
                 phone: phone,
 				address: address,
-                id: this.state.editingContact.id
+				id: this.state.editingContact.id,
+				validationError: validationError
             }
         });
     },
-    handleCancelClick: function(e) {
+    handleCancelClick: function() {
         this.setState({
             editingContact: {}
         });
     },    
     reloadContacts: function(query) {
         $.ajax({
-            url: this.props.url+'Search?query='+query,
-            dataType: 'json',
+            url: this.props.url+"Search?query="+query,
+            dataType: "json",
             cache: false,
             success: function(data) {
                 this.setState({
@@ -187,19 +192,25 @@ var ContactPanel = React.createClass({
         });
     },
     handleSubmitClick: function(e) {
-        e.preventDefault();
+    	e.preventDefault();
+		if (this.state.editingContact.validationError) {
+			this.setState({
+				message: this.state.editingContact.validationError
+			});
+			return;
+		}
         if(this.state.editingContact.id) {
             $.ajax({
                 url: this.props.url+this.state.editingContact.id,
-                dataType: 'json',
-                method: 'PUT',
+                dataType: "json",
+                method: "PUT",
                 data:this.state.editingContact,
                 cache: false,
-                success: function(data) {
+                success: function() {
                     this.setState({
                         message: "Successfully updated contact"
                     });
-                    this.reloadContacts('');
+                    this.reloadContacts("");
                 }.bind(this),
                 error: function(xhr, status, err) {
                     console.error(this.props.url, status, err.toString());
@@ -211,15 +222,15 @@ var ContactPanel = React.createClass({
         } else {
             $.ajax({
                 url: this.props.url,
-                dataType: 'json',
-                method: 'POST',
+                dataType: "json",
+                method: "POST",
                 data:this.state.editingContact,
                 cache: false,
-                success: function(data) {
+                success: function() {
                     this.setState({
                         message: "Successfully added contact"
                     });
-                    this.reloadContacts('');
+                    this.reloadContacts("");
                 }.bind(this),
                 error: function(xhr, status, err) {
                     console.error(this.props.url, status, err.toString());
@@ -237,14 +248,14 @@ var ContactPanel = React.createClass({
         e.preventDefault();
         $.ajax({
             url: this.props.url+this.state.editingContact.id,
-            method: 'DELETE',
+            method: "DELETE",
             cache: false,
-            success: function(data) {
+            success: function() {
                 this.setState({
                     message: "Successfully deleted contact",
                     editingContact: {}
                 });
-                this.reloadContacts('');
+                this.reloadContacts("");
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -253,7 +264,7 @@ var ContactPanel = React.createClass({
                 });
             }.bind(this)
         });
-    },
+    }
 });
 
-React.render(<ContactPanel url='/api/contacts/' />, document.getElementById('content'));
+React.render(<ContactPanel url="/api/contacts/" />, document.getElementById("content"));
