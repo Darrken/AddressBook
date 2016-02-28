@@ -72,9 +72,12 @@ var ContactForm = React.createClass({
         );
     },
     onChange: function() {
-        var title = React.findDOMNode(this.refs.title).value;
-        var category = React.findDOMNode(this.refs.category).value;
-        this.props.handleChange(title, category);
+        var firstName = React.findDOMNode(this.refs.firstName).value;
+        var lastName = React.findDOMNode(this.refs.lastName).value;
+        var email = React.findDOMNode(this.refs.email).value;
+        var phone = React.findDOMNode(this.refs.phone).value;
+        var address = React.findDOMNode(this.refs.address).value;
+        this.props.handleChange(firstName, lastName, email, phone, address);
     }
 });
 
@@ -147,11 +150,14 @@ var ContactPanel = React.createClass({
             message: ''
         });
     },
-    handleChange: function(title, category) {
+    handleChange: function (firstName, lastName, email, phone, address) {
         this.setState({
             editingContact: {
-                title: title,
-                category: category,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                phone: phone,
+				address: address,
                 id: this.state.editingContact.id
             }
         });

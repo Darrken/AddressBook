@@ -6,6 +6,7 @@ using AddressBook.Services;
 using Autofac;
 using Autofac.Integration.Mvc;
 using Autofac.Integration.WebApi;
+using Newtonsoft.Json.Serialization;
 
 namespace AddressBook
 {
@@ -26,6 +27,10 @@ namespace AddressBook
 			AreaRegistration.RegisterAllAreas();
 			GlobalConfiguration.Configure(WebApiConfig.Register);
 			FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+
+			var config = GlobalConfiguration.Configuration;
+			config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+			config.Formatters.JsonFormatter.UseDataContractJsonSerializer = false;
 		}
 	}
 }

@@ -20,7 +20,6 @@ namespace AddressBook.Controllers
 		}
 
 		// GET api/contacts
-		[ActionName("DefaultAction")]
 		public IEnumerable<Contact> Get()
 		{
 			return _contactsService.GetContacts().OrderBy(c => c.LastName);
@@ -40,11 +39,10 @@ namespace AddressBook.Controllers
 					.OrderBy(c => c.LastName);
 			}
 
-			return _contactsService.GetContacts().OrderBy(c => c.LastName); 
+			return _contactsService.GetContacts().OrderBy(c => c.LastName);
 		}
 
 		// GET api/contacts/5
-		[ActionName("DefaultAction")]
 		public Contact Get(int id)
 		{
 			var contact = _contactsService.Get(id);
@@ -63,7 +61,6 @@ namespace AddressBook.Controllers
 		}
 
 		// POST api/contacts
-		[ActionName("DefaultAction")]
 		public Contact Post([FromBody]Contact contact)
 		{
 			Contact newContact;
@@ -97,7 +94,6 @@ namespace AddressBook.Controllers
 		}
 
 		// PUT api/contacts/5
-		[ActionName("DefaultAction")]
 		public void Put([FromBody]Contact contact)
 		{
 			if (contact.FirstName.IsNullOrWhiteSpace() || contact.LastName.IsNullOrWhiteSpace() ||
@@ -125,7 +121,6 @@ namespace AddressBook.Controllers
 		}
 
 		// DELETE api/contacts/5
-		[ActionName("DefaultAction")]
 		public void Delete(int id)
 		{
 			var success = _contactsService.Delete(id);
