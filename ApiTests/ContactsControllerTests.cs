@@ -46,7 +46,7 @@ namespace ApiTests
 				{
 					Id = 3,
 					Address = "111 Washington Street",
-					Email = "george@gmail.com",
+					Email = "george@outlook.com",
 					FirstName = "George",
 					LastName = "Lenny",
 					Phone = "201.343.6844"
@@ -176,6 +176,39 @@ namespace ApiTests
 			// Act & Assert
 			Assert.That(() => _controller.Delete(5), Throws.TypeOf<HttpResponseException>());
 			_mockService.Verify(m => m.Delete(It.IsAny<int>()), Times.Once);
+		}
+
+		[Test]
+		public void SearchReturnsFilteredResults()
+		{
+			// Act
+			var results = _controller.Search("Jake").ToList();
+
+			// Assert
+			Assert.AreEqual(1, results.Count);
+			Assert.AreEqual("Romaine", results[0].LastName);
+
+			// Act
+			results = _controller.Search("gmail").ToList();
+
+			// Assert
+			Assert.AreEqual(2, results.Count);
+		}
+
+		[Test]
+		public void SearchReturnsAllResultsWhenParamIsNullOrEmpty()
+		{
+			// Act
+			var results = _controller.Search(null).ToList();
+
+			// Assert
+			Assert.AreEqual(3, results.Count);
+
+			// Act
+			results = _controller.Search("").ToList();
+
+			// Assert
+			Assert.AreEqual(3, results.Count);
 		}
 	}
 }
