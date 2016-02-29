@@ -59,11 +59,11 @@ var ContactForm = React.createClass({
     render: function() {
         return(
             <form onSubmit={this.props.handleSubmitClick}>
-                <label forHtml="firstName">First Name</label><input ref="firstName" name="firstName" type="text" value={this.props.contact.firstName} required onChange={this.onChange}/>
-                <label forHtml="lastName">Last Name</label><input ref="lastName" name="lastName" type="text" value={this.props.contact.lastName} required onChange={this.onChange}/>
-                <label forHtml="email">Email</label><input ref="email" name="email" type="email" value={this.props.contact.email} required onChange={this.onChange}/>
-                <label forHtml="phone">Phone</label><input ref="phone" name="phone" type="tel" value={this.props.contact.phone} onChange={this.onChange}/>
-                <label forHtml="address">Address</label><input ref="address" name="address" type="text" value={this.props.contact.address} onChange={this.onChange}/>
+                <label forHtml="firstName">First Name</label><input ref="firstName" name="firstName" type="text" value={this.props.contact.firstName} maxLength="15" required onChange={this.onChange}/>
+                <label forHtml="lastName">Last Name</label><input ref="lastName" name="lastName" type="text" value={this.props.contact.lastName} maxLength="15" required onChange={this.onChange}/>
+                <label forHtml="email">Email</label><input ref="email" name="email" type="email" value={this.props.contact.email}  maxLength="30" required onChange={this.onChange}/>
+                <label forHtml="phone">Phone</label><input ref="phone" name="phone" type="tel" value={this.props.contact.phone} maxLength="15" onChange={this.onChange}/>
+                <label forHtml="address">Address</label><input ref="address" name="address" type="text" value={this.props.contact.address} maxLength="50" onChange={this.onChange}/>
                 <input type="submit" value={this.props.contact.id ? "Save (id = " + this.props.contact.id + ")" : "Add"} />
                 {this.props.contact.id ? <button onClick={this.props.handleDeleteClick}>Delete</button> : null}
                 {this.props.contact.id ? <button onClick={this.props.handleCancelClick}>Cancel</button> : null}
